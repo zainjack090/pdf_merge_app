@@ -2,23 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDF Merger</title>
+    <title>PDF Merger App</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #333; }
+        form { margin-top: 20px; }
+        input[type="file"] { margin-bottom: 10px; }
+        button { padding: 10px 20px; }
+        .error { color: red; }
+    </style>
+    <script>
+        function validateFileInput() {
+            const fileInput = document.getElementById('pdf_files');
+            const files = fileInput.files;
+            if (files.length > 5) {
+                alert('You can upload a maximum of 5 PDF files.');
+                fileInput.value = ''; // clear selection
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
-    <h1>Merge up to 5 PDFs</h1>
+    <h1>Merge up to 5 PDF Files</h1>
+    
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul>
           {% for message in messages %}
-            <li style="color:red;">{{ message }}</li>
+            <li class="error">{{ message }}</li>
           {% endfor %}
         </ul>
       {% endif %}
     {% endwith %}
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="pdf_files" accept="application/pdf" multiple required>
-        <p>You can upload up to 5 PDF files.</p>
-        <button type="submit">Merge and Download</button>
+
+    <form method="post" enctype="multipart/form-data" onsubmit="return validateFileInput()">
+        <input type="file" id="pdf_files" name="pdf_files" accept="application/pdf" multiple required>
+        <p><strong>Note:</strong> Select 1 to 5 PDF files only.</p>
+        <button type="submit">Merge & Download PDF</button>
     </form>
 </body>
 </html>
