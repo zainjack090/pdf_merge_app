@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDF Merger App</title>
+    <title>PDF & Image Merger App</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
         h1 { color: #333; }
@@ -13,11 +13,11 @@
     </style>
     <script>
         function validateFileInput() {
-            const fileInput = document.getElementById('pdf_files');
+            const fileInput = document.getElementById('files');
             const files = fileInput.files;
             if (files.length > 5) {
-                alert('You can upload a maximum of 5 PDF files.');
-                fileInput.value = ''; // clear selection
+                alert('You can upload a maximum of 5 files.');
+                fileInput.value = '';
                 return false;
             }
             return true;
@@ -25,7 +25,7 @@
     </script>
 </head>
 <body>
-    <h1>Merge up to 5 PDF Files</h1>
+    <h1>Merge up to 5 PDFs or Images into One PDF</h1>
     
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -38,8 +38,8 @@
     {% endwith %}
 
     <form method="post" enctype="multipart/form-data" onsubmit="return validateFileInput()">
-        <input type="file" id="pdf_files" name="pdf_files" accept="application/pdf" multiple required>
-        <p><strong>Note:</strong> Select 1 to 5 PDF files only.</p>
+        <input type="file" id="files" name="files" accept=".pdf, image/png, image/jpeg" multiple required>
+        <p><strong>Note:</strong> Select 1 to 5 PDF or Image files (PNG, JPG, JPEG).</p>
         <button type="submit">Merge & Download PDF</button>
     </form>
 </body>
