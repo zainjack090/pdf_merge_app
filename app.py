@@ -16,12 +16,30 @@ if not os.path.exists(UPLOAD_FOLDER):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def convert_image_to_pdf(image_path):
+def convert_image_to_pdf_a4(image_path):
+    a4_width, a4_height = 595, 842  # A4 size in points at 72 DPI
     image = Image.open(image_path)
-    if image.mode in ("RGBA", "P"):
-        image = image.convert("RGB")
-    pdf_path = image_path.rsplit('.', 1)[0] + '.pdf'
-    image.save(pdf_path, "PDF", resolution=100.0)
+    image_ratio = image.width / image.height
+    a4_ratio = a4_width / a4_height
+
+    # Maintain aspect ratio
+    if image_ratio > a4_ratio:
+        new_width = a4_width
+        new_height = int(a4_width / image_ratio)
+    else:
+        new_height = a4_height
+        new_width = int(a4_height * image_ratio)
+
+    image = image.resize((new_width, new_height), Image.LANCZOS)
+
+    # Create white A4 background
+    a4_image = Image.new("RGB", (a4_width, a4_height), (255, 255, 255))
+    paste_x = (a4_width - new_width) // 2
+    paste_y = (a4_height - new_height) // 2
+    a4_image.paste(image, (paste_x, paste_y))
+
+    pdf_path = image_path.rsplit('.', 1)[0] + '_a4.pdf'
+    a4_image.save(pdf_path, "PDF", resolution=100.0)
     return pdf_path
 
 @app.route('/', methods=['GET', 'POST'])
@@ -49,7 +67,7 @@ def upload_files():
                     merger.append(filepath)
                     file_paths.append(filepath)
                 else:
-                    pdf_path = convert_image_to_pdf(filepath)
+                    pdf_path = convert_image_to_pdf_a4(filepath)
                     merger.append(pdf_path)
                     file_paths.append(filepath)
                     temp_pdfs.append(pdf_path)
