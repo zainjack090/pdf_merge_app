@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: pdf-merge-app
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
