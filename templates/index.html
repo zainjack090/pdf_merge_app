@@ -1,1 +1,24 @@
-h ka bh
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Merger</title>
+</head>
+<body>
+    <h1>Merge up to 5 PDFs</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li style="color:red;">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="pdf_files" accept="application/pdf" multiple required>
+        <p>You can upload up to 5 PDF files.</p>
+        <button type="submit">Merge and Download</button>
+    </form>
+</body>
+</html>
