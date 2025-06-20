@@ -5,12 +5,9 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = '/tmp'  # Vercel only allows /tmp for writing
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'pdf'}
-
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -42,13 +39,12 @@ def upload_files():
         merger.write(output_path)
         merger.close()
 
-        # Remove individual PDFs after merge
-        for path in file_paths:
-            os.remove(path)
+        # No need to remove files manually in /tmp on Vercel
 
         return send_file(output_path, as_attachment=True)
 
     return render_template('index.html')
 
+# Vercel expects this name to locate the app object
 if __name__ == '__main__':
     app.run(debug=True)
